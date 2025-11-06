@@ -143,6 +143,9 @@ public class DatabaseManager {
      * Insert sample learning resources into database
      * These map common skills to real learning resources
      */
+    /**
+     * Insert sample learning resources into database with REAL course links
+     */
     private void insertSampleResources() {
         try {
             // Check if resources already exist
@@ -151,7 +154,6 @@ public class DatabaseManager {
             ResultSet rs = checkStmt.executeQuery(checkQuery);
 
             if (rs.next() && rs.getInt(1) > 0) {
-                // Resources already exist, skip insertion
                 rs.close();
                 checkStmt.close();
                 return;
@@ -159,73 +161,129 @@ public class DatabaseManager {
             rs.close();
             checkStmt.close();
 
-            // Prepare insert statement
             String insertSQL = """
-                INSERT INTO learning_resources 
-                (skill_name, resource_title, resource_type, resource_url, platform, duration_weeks, difficulty_level, description)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """;
+            INSERT INTO learning_resources 
+            (skill_name, resource_title, resource_type, resource_url, platform, duration_weeks, difficulty_level, description)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """;
 
             PreparedStatement pstmt = connection.prepareStatement(insertSQL);
 
-            // Sample resources for common skills
+            // REAL resources with actual working links
             Object[][] resources = {
                     // Java
-                    {"Java", "Java Programming Masterclass", "Course", "https://www.coursera.org/learn/java-programming", "Coursera", 8, "Beginner", "Complete Java programming from basics to advanced"},
-                    {"Java", "Effective Java Practice", "GitHub Project", "https://github.com/topics/java-practice", "GitHub", 4, "Intermediate", "Hands-on Java coding exercises"},
+                    {"Java", "Java Programming Masterclass", "Course", "https://www.udemy.com/course/java-the-complete-java-developer-course/", "Udemy", 12, "Beginner", "Complete Java from zero to hero"},
+                    {"Java", "Java Programming and Software Engineering", "Course", "https://www.coursera.org/specializations/java-programming", "Coursera", 10, "Beginner", "Duke University Java course"},
 
                     // Python
-                    {"Python", "Python for Everybody", "Course", "https://www.coursera.org/specializations/python", "Coursera", 8, "Beginner", "Learn Python programming fundamentals"},
-                    {"Python", "Python Projects for Beginners", "GitHub Project", "https://github.com/topics/python-projects", "GitHub", 4, "Beginner", "Practice Python with real projects"},
+                    {"Python", "Python for Everybody", "Course", "https://www.coursera.org/specializations/python", "Coursera", 8, "Beginner", "University of Michigan Python course"},
+                    {"Python", "Complete Python Bootcamp", "Course", "https://www.udemy.com/course/complete-python-bootcamp/", "Udemy", 10, "Beginner", "Go from zero to hero in Python"},
 
                     // JavaScript
-                    {"JavaScript", "The Complete JavaScript Course", "Course", "https://www.udemy.com/course/the-complete-javascript-course/", "Udemy", 12, "Beginner", "Modern JavaScript from beginner to advanced"},
-                    {"JavaScript", "JavaScript30", "GitHub Project", "https://github.com/wesbos/JavaScript30", "GitHub", 4, "Intermediate", "30 day vanilla JS coding challenge"},
+                    {"JavaScript", "The Complete JavaScript Course", "Course", "https://www.udemy.com/course/the-complete-javascript-course/", "Udemy", 12, "Beginner", "Modern JavaScript from scratch"},
+                    {"JavaScript", "JavaScript Algorithms and Data Structures", "Course", "https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/", "freeCodeCamp", 6, "Intermediate", "Free JavaScript certification"},
 
                     // React
-                    {"React", "React - The Complete Guide", "Course", "https://www.udemy.com/course/react-the-complete-guide/", "Udemy", 10, "Intermediate", "Master React with hooks, Redux, and more"},
-                    {"React", "React Projects Collection", "GitHub Project", "https://github.com/topics/react-projects", "GitHub", 6, "Intermediate", "Build real-world React applications"},
+                    {"React", "React - The Complete Guide", "Course", "https://www.udemy.com/course/react-the-complete-guide-incl-redux/", "Udemy", 10, "Intermediate", "React, Hooks, Redux, React Router"},
+                    {"React", "Full-Stack Web Development with React", "Course", "https://www.coursera.org/specializations/full-stack-react", "Coursera", 12, "Intermediate", "Hong Kong University course"},
+
+                    // Node.js
+                    {"Node.js", "Node.js - The Complete Guide", "Course", "https://www.udemy.com/course/nodejs-the-complete-guide/", "Udemy", 10, "Intermediate", "Build REST APIs with Node.js"},
+                    {"Node.js", "Server-side Development with NodeJS", "Course", "https://www.coursera.org/learn/server-side-nodejs", "Coursera", 4, "Intermediate", "Express framework and MongoDB"},
+
+                    // Angular
+                    {"Angular", "Angular - The Complete Guide", "Course", "https://www.udemy.com/course/the-complete-guide-to-angular-2/", "Udemy", 12, "Intermediate", "Master Angular and build apps"},
 
                     // Machine Learning
-                    {"Machine Learning", "Machine Learning Specialization", "Course", "https://www.coursera.org/specializations/machine-learning-introduction", "Coursera", 12, "Intermediate", "Learn ML fundamentals from Andrew Ng"},
-                    {"Machine Learning", "ML Projects Repository", "GitHub Project", "https://github.com/topics/machine-learning-projects", "GitHub", 8, "Advanced", "Implement ML algorithms from scratch"},
+                    {"Machine Learning", "Machine Learning Specialization", "Course", "https://www.coursera.org/specializations/machine-learning-introduction", "Coursera", 12, "Intermediate", "Andrew Ng's famous ML course"},
+                    {"Machine Learning", "Machine Learning A-Z", "Course", "https://www.udemy.com/course/machinelearning/", "Udemy", 10, "Beginner", "Hands-on Python & R in ML"},
+
+                    // Data Science
+                    {"Data Science", "IBM Data Science Professional Certificate", "Course", "https://www.coursera.org/professional-certificates/ibm-data-science", "Coursera", 16, "Beginner", "Complete data science program"},
+                    {"Data Science", "Data Science Bootcamp", "Course", "https://www.udemy.com/course/the-data-science-course-complete-data-science-bootcamp/", "Udemy", 14, "Beginner", "Statistics, Python, ML, Deep Learning"},
 
                     // SQL
-                    {"SQL", "SQL for Data Science", "Course", "https://www.coursera.org/learn/sql-for-data-science", "Coursera", 4, "Beginner", "Master SQL queries and database design"},
-                    {"SQL", "SQL Practice Problems", "GitHub Project", "https://github.com/topics/sql-practice", "GitHub", 2, "Beginner", "Practice SQL with real datasets"},
+                    {"SQL", "The Complete SQL Bootcamp", "Course", "https://www.udemy.com/course/the-complete-sql-bootcamp/", "Udemy", 4, "Beginner", "Master SQL with PostgreSQL"},
+                    {"SQL", "SQL for Data Science", "Course", "https://www.coursera.org/learn/sql-for-data-science", "Coursera", 4, "Beginner", "UC Davis SQL course"},
 
                     // Docker
-                    {"Docker", "Docker Mastery", "Course", "https://www.udemy.com/course/docker-mastery/", "Udemy", 6, "Intermediate", "Learn Docker, Compose, and Swarm"},
-                    {"Docker", "Docker Examples", "GitHub Project", "https://github.com/docker/awesome-compose", "GitHub", 3, "Intermediate", "Docker Compose examples"},
+                    {"Docker", "Docker Mastery", "Course", "https://www.udemy.com/course/docker-mastery/", "Udemy", 6, "Intermediate", "Docker, Compose, and Swarm"},
+                    {"Docker", "Docker Tutorial for Beginners", "Video", "https://www.youtube.com/watch?v=fqMOX6JJhGo", "YouTube", 1, "Beginner", "Free Docker crash course"},
+
+                    // Kubernetes
+                    {"Kubernetes", "Kubernetes for Beginners", "Course", "https://www.udemy.com/course/learn-kubernetes/", "Udemy", 6, "Intermediate", "Deploy applications with K8s"},
 
                     // AWS
-                    {"AWS", "AWS Certified Solutions Architect", "Course", "https://www.coursera.org/learn/aws-certified-solutions-architect-associate", "Coursera", 10, "Intermediate", "Prepare for AWS certification"},
-                    {"AWS", "AWS Projects", "GitHub Project", "https://github.com/topics/aws-projects", "GitHub", 8, "Advanced", "Deploy applications on AWS"},
+                    {"AWS", "AWS Certified Solutions Architect", "Course", "https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/", "Udemy", 12, "Intermediate", "Prepare for AWS certification"},
+                    {"AWS", "AWS Fundamentals", "Course", "https://www.coursera.org/specializations/aws-fundamentals", "Coursera", 8, "Beginner", "Amazon Web Services basics"},
 
                     // Git
-                    {"Git", "Git & GitHub Complete Guide", "Course", "https://www.udemy.com/course/git-and-github-complete-guide/", "Udemy", 3, "Beginner", "Master version control with Git"},
-                    {"Git", "Git Exercises", "GitHub Project", "https://github.com/topics/git-exercises", "GitHub", 2, "Beginner", "Practice Git commands"},
+                    {"Git", "Git Complete: The Definitive Guide", "Course", "https://www.udemy.com/course/git-complete/", "Udemy", 3, "Beginner", "Master Git and GitHub"},
+                    {"Git", "Version Control with Git", "Course", "https://www.coursera.org/learn/version-control-with-git", "Coursera", 3, "Beginner", "Atlassian Git course"},
 
-                    // Data Structures
-                    {"Data Structures", "Data Structures and Algorithms", "Course", "https://www.coursera.org/specializations/data-structures-algorithms", "Coursera", 16, "Intermediate", "Master DSA fundamentals"},
-                    {"Data Structures", "DSA Practice", "GitHub Project", "https://github.com/TheAlgorithms/Java", "GitHub", 12, "Intermediate", "Implement data structures"}
+                    // Spring Boot
+                    {"Spring Boot", "Spring Boot Masterclass", "Course", "https://www.udemy.com/course/spring-hibernate-tutorial/", "Udemy", 10, "Intermediate", "Spring Boot, Spring MVC, Hibernate"},
+
+                    // MongoDB
+                    {"MongoDB", "MongoDB - The Complete Developer's Guide", "Course", "https://www.udemy.com/course/mongodb-the-complete-developers-guide/", "Udemy", 6, "Intermediate", "NoSQL with MongoDB"},
+
+                    // TypeScript
+                    {"TypeScript", "Understanding TypeScript", "Course", "https://www.udemy.com/course/understanding-typescript/", "Udemy", 8, "Intermediate", "Master TypeScript"},
+
+                    // Django
+                    {"Django", "Python Django - The Practical Guide", "Course", "https://www.udemy.com/course/python-django-the-practical-guide/", "Udemy", 10, "Intermediate", "Build web apps with Django"},
+
+                    // Flask
+                    {"Flask", "REST APIs with Flask and Python", "Course", "https://www.udemy.com/course/rest-api-flask-and-python/", "Udemy", 6, "Intermediate", "Build REST APIs with Flask"},
+
+                    // Android
+                    {"Android", "The Complete Android Development Course", "Course", "https://www.udemy.com/course/complete-android-n-developer-course/", "Udemy", 12, "Beginner", "Build Android apps from scratch"},
+
+                    // iOS
+                    {"iOS", "iOS & Swift - The Complete iOS App Development", "Course", "https://www.udemy.com/course/ios-13-app-development-bootcamp/", "Udemy", 12, "Beginner", "Build iOS apps with Swift"},
+
+                    // Flutter
+                    {"Flutter", "Flutter & Dart - The Complete Guide", "Course", "https://www.udemy.com/course/learn-flutter-dart-to-build-ios-android-apps/", "Udemy", 10, "Intermediate", "Cross-platform mobile development"},
+
+                    // React Native
+                    {"React Native", "The Complete React Native + Hooks Course", "Course", "https://www.udemy.com/course/the-complete-react-native-and-redux-course/", "Udemy", 10, "Intermediate", "Build iOS and Android apps"},
+
+                    // TensorFlow
+                    {"TensorFlow", "TensorFlow Developer Certificate", "Course", "https://www.coursera.org/professional-certificates/tensorflow-in-practice", "Coursera", 12, "Intermediate", "Official TensorFlow certification"},
+
+                    // PyTorch
+                    {"PyTorch", "PyTorch for Deep Learning", "Course", "https://www.udemy.com/course/pytorch-for-deep-learning-with-python-bootcamp/", "Udemy", 10, "Intermediate", "Deep learning with PyTorch"},
+
+                    // Statistics
+                    {"Statistics", "Statistics with Python", "Course", "https://www.coursera.org/specializations/statistics-with-python", "Coursera", 12, "Intermediate", "University of Michigan course"},
+
+                    // Linux
+                    {"Linux", "Linux Mastery", "Course", "https://www.udemy.com/course/linux-mastery/", "Udemy", 6, "Beginner", "Master the Linux command line"},
+
+                    // C++
+                    {"C++", "Beginning C++ Programming", "Course", "https://www.udemy.com/course/beginning-c-plus-plus-programming/", "Udemy", 10, "Beginner", "Modern C++ from scratch"},
+
+                    // Go
+                    {"Go", "Learn Go Programming", "Course", "https://www.udemy.com/course/learn-how-to-code/", "Udemy", 8, "Beginner", "Google's Go language"},
+
+                    // Rust
+                    {"Rust", "The Rust Programming Language", "Book", "https://doc.rust-lang.org/book/", "Rust Official", 8, "Intermediate", "Official Rust book - Free"}
             };
 
-            // Insert all resources
             for (Object[] resource : resources) {
-                pstmt.setString(1, (String) resource[0]);  // skill_name
-                pstmt.setString(2, (String) resource[1]);  // resource_title
-                pstmt.setString(3, (String) resource[2]);  // resource_type
-                pstmt.setString(4, (String) resource[3]);  // resource_url
-                pstmt.setString(5, (String) resource[4]);  // platform
-                pstmt.setInt(6, (Integer) resource[5]);     // duration_weeks
-                pstmt.setString(7, (String) resource[6]);  // difficulty_level
-                pstmt.setString(8, (String) resource[7]);  // description
+                pstmt.setString(1, (String) resource[0]);
+                pstmt.setString(2, (String) resource[1]);
+                pstmt.setString(3, (String) resource[2]);
+                pstmt.setString(4, (String) resource[3]);
+                pstmt.setString(5, (String) resource[4]);
+                pstmt.setInt(6, (Integer) resource[5]);
+                pstmt.setString(7, (String) resource[6]);
+                pstmt.setString(8, (String) resource[7]);
                 pstmt.executeUpdate();
             }
 
             pstmt.close();
-            System.out.println("✅ Sample learning resources inserted successfully!");
+            System.out.println("✅ Sample learning resources with real links inserted successfully!");
 
         } catch (SQLException e) {
             System.err.println("❌ Error inserting sample resources!");

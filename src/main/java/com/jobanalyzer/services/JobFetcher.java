@@ -241,57 +241,163 @@ public class JobFetcher {
     private List<Job> createSampleJobs(String searchQuery) {
         List<Job> sampleJobs = new ArrayList<>();
 
-        // Sample Job 1: Java Developer
-        Job job1 = new Job("Senior Java Developer", "Tech Corp",
-                "Looking for experienced Java developer with Spring Boot, Microservices, AWS, and SQL skills. " +
-                        "5+ years experience required. Docker and Kubernetes knowledge is a plus.");
-        job1.setId("sample-1");
-        job1.setLocation("San Francisco, CA");
-        job1.setSalary(120000);
-        job1.setUrl("https://example.com/job1");
-        job1.setRequiredSkills(skillExtractor.extractSkills(job1.getDescription()));
-        sampleJobs.add(job1);
+        // Determine job type and create relevant jobs
+        String lowerQuery = searchQuery.toLowerCase();
 
-        // Sample Job 2: Full Stack Developer
-        Job job2 = new Job("Full Stack Developer", "StartUp Inc",
-                "Full stack position requiring React, Node.js, MongoDB, and REST API experience. " +
-                        "JavaScript, HTML, CSS, Git. Agile environment.");
-        job2.setId("sample-2");
-        job2.setLocation("New York, NY");
-        job2.setSalary(110000);
-        job2.setUrl("https://example.com/job2");
-        job2.setRequiredSkills(skillExtractor.extractSkills(job2.getDescription()));
-        sampleJobs.add(job2);
-
-        // Sample Job 3: Data Scientist
-        Job job3 = new Job("Data Scientist", "Analytics Co",
-                "Seeking data scientist with Python, Machine Learning, TensorFlow, and SQL expertise. " +
-                        "Statistics, Data Analysis, Pandas, NumPy required.");
-        job3.setId("sample-3");
-        job3.setLocation("Austin, TX");
-        job3.setSalary(130000);
-        job3.setUrl("https://example.com/job3");
-        job3.setRequiredSkills(skillExtractor.extractSkills(job3.getDescription()));
-        sampleJobs.add(job3);
-
-        // Add more sample jobs...
-        for (int i = 4; i <= 50; i++) {
-            Job job = new Job(
-                    "Software Engineer " + i,
-                    "Company " + i,
-                    "Looking for developer with Java, Python, SQL, Git, and Agile experience. " +
-                            "Additional skills: Docker, AWS, React, Node.js."
-            );
-            job.setId("sample-" + i);
-            job.setLocation("Various Locations");
-            job.setSalary(100000 + (i * 1000));
-            job.setUrl("https://example.com/job" + i);
-            job.setRequiredSkills(skillExtractor.extractSkills(job.getDescription()));
-            sampleJobs.add(job);
+        if (lowerQuery.contains("data scient")) {
+            return createDataScienceJobs();
+        } else if (lowerQuery.contains("web dev")) {
+            return createWebDeveloperJobs();
+        } else if (lowerQuery.contains("mobile")) {
+            return createMobileDeveloperJobs();
+        } else if (lowerQuery.contains("devops")) {
+            return createDevOpsJobs();
+        } else if (lowerQuery.contains("machine learning")) {
+            return createMLEngineerJobs();
+        } else {
+            // Default: Software Developer jobs
+            return createSoftwareDeveloperJobs();
         }
+    }
 
-        System.out.println("✅ Created " + sampleJobs.size() + " sample jobs for testing");
-        return sampleJobs;
+    private List<Job> createSoftwareDeveloperJobs() {
+        List<Job> jobs = new ArrayList<>();
+
+        String[] companies = {"Google", "Microsoft", "Amazon", "Meta", "Apple", "Netflix", "Uber", "Airbnb", "Spotify", "Tesla"};
+        String[] cities = {"San Francisco, CA", "Seattle, WA", "New York, NY", "Austin, TX", "Boston, MA"};
+
+        for (int i = 0; i < 50; i++) {
+            Job job = new Job(
+                    "Software Engineer " + (i % 3 == 0 ? "II" : i % 3 == 1 ? "III" : ""),
+                    companies[i % companies.length],
+                    "Looking for software engineer with strong programming skills. " +
+                            "Experience with Java, Python, algorithms, and system design required. " +
+                            "Knowledge of databases, REST APIs, and Agile methodologies preferred."
+            );
+            job.setId("sw-" + i);
+            job.setLocation(cities[i % cities.length]);
+            job.setSalary(100000 + (i * 2000));
+            job.setUrl("https://www.linkedin.com/jobs/");
+
+            // Add relevant skills
+            job.addRequiredSkill(new Skill("Java"));
+            job.addRequiredSkill(new Skill("Python"));
+            job.addRequiredSkill(new Skill("SQL"));
+            job.addRequiredSkill(new Skill("Git"));
+            job.addRequiredSkill(new Skill("REST API"));
+            if (i % 2 == 0) job.addRequiredSkill(new Skill("Docker"));
+            if (i % 3 == 0) job.addRequiredSkill(new Skill("AWS"));
+            if (i % 4 == 0) job.addRequiredSkill(new Skill("Kubernetes"));
+
+            jobs.add(job);
+        }
+        return jobs;
+    }
+
+    private List<Job> createDataScienceJobs() {
+        List<Job> jobs = new ArrayList<>();
+
+        for (int i = 0; i < 50; i++) {
+            Job job = new Job(
+                    "Data Scientist",
+                    "Company " + i,
+                    "Seeking data scientist with Python, machine learning, and statistics expertise. " +
+                            "Experience with TensorFlow, PyTorch, pandas, and data visualization required."
+            );
+            job.setLocation("Remote");
+            job.addRequiredSkill(new Skill("Python"));
+            job.addRequiredSkill(new Skill("Machine Learning"));
+            job.addRequiredSkill(new Skill("Statistics"));
+            job.addRequiredSkill(new Skill("Pandas"));
+            job.addRequiredSkill(new Skill("NumPy"));
+            job.addRequiredSkill(new Skill("TensorFlow"));
+            job.addRequiredSkill(new Skill("SQL"));
+            jobs.add(job);
+        }
+        return jobs;
+    }
+
+    private List<Job> createWebDeveloperJobs() {
+        List<Job> jobs = new ArrayList<>();
+
+        for (int i = 0; i < 50; i++) {
+            Job job = new Job(
+                    "Web Developer",
+                    "WebCo " + i,
+                    "Web developer needed. HTML, CSS, JavaScript, React, Node.js experience required."
+            );
+            job.addRequiredSkill(new Skill("HTML"));
+            job.addRequiredSkill(new Skill("CSS"));
+            job.addRequiredSkill(new Skill("JavaScript"));
+            job.addRequiredSkill(new Skill("React"));
+            job.addRequiredSkill(new Skill("Node.js"));
+            job.addRequiredSkill(new Skill("Git"));
+            jobs.add(job);
+        }
+        return jobs;
+    }
+
+    private List<Job> createMobileDeveloperJobs() {
+        List<Job> jobs = new ArrayList<>();
+
+        for (int i = 0; i < 50; i++) {
+            Job job = new Job(
+                    "Mobile Developer",
+                    "MobileApp " + i,
+                    "Mobile developer for iOS and Android. Swift, Kotlin, React Native experience."
+            );
+            if (i % 2 == 0) {
+                job.addRequiredSkill(new Skill("iOS"));
+                job.addRequiredSkill(new Skill("Swift"));
+            } else {
+                job.addRequiredSkill(new Skill("Android"));
+                job.addRequiredSkill(new Skill("Kotlin"));
+            }
+            job.addRequiredSkill(new Skill("React Native"));
+            job.addRequiredSkill(new Skill("Git"));
+            jobs.add(job);
+        }
+        return jobs;
+    }
+
+    private List<Job> createDevOpsJobs() {
+        List<Job> jobs = new ArrayList<>();
+
+        for (int i = 0; i < 50; i++) {
+            Job job = new Job(
+                    "DevOps Engineer",
+                    "CloudOps " + i,
+                    "DevOps engineer needed. Docker, Kubernetes, AWS, CI/CD, Linux required."
+            );
+            job.addRequiredSkill(new Skill("Docker"));
+            job.addRequiredSkill(new Skill("Kubernetes"));
+            job.addRequiredSkill(new Skill("AWS"));
+            job.addRequiredSkill(new Skill("Linux"));
+            job.addRequiredSkill(new Skill("Git"));
+            job.addRequiredSkill(new Skill("Jenkins"));
+            jobs.add(job);
+        }
+        return jobs;
+    }
+
+    private List<Job> createMLEngineerJobs() {
+        List<Job> jobs = new ArrayList<>();
+
+        for (int i = 0; i < 50; i++) {
+            Job job = new Job(
+                    "Machine Learning Engineer",
+                    "AI Corp " + i,
+                    "ML engineer for deep learning projects. Python, TensorFlow, PyTorch required."
+            );
+            job.addRequiredSkill(new Skill("Python"));
+            job.addRequiredSkill(new Skill("Machine Learning"));
+            job.addRequiredSkill(new Skill("Deep Learning"));
+            job.addRequiredSkill(new Skill("TensorFlow"));
+            job.addRequiredSkill(new Skill("PyTorch"));
+            job.addRequiredSkill(new Skill("Docker"));
+            jobs.add(job);
+        }
+        return jobs;
     }
 
     /**

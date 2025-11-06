@@ -314,23 +314,27 @@ public class Main extends Application {
         VBox header = createResultsHeader();
         root.setTop(header);
 
-        // Center: Tabs with different views
+// Center: Tabs with different views
         TabPane tabPane = new TabPane();
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
-        // Tab 1: Summary
+// Tab 1: Summary
         Tab summaryTab = new Tab("📊 Summary");
         summaryTab.setContent(createSummaryView());
 
-        // Tab 2: Learning Path
+// Tab 2: Job Postings (NEW!)
+        Tab jobsTab = new Tab("💼 Job Postings");
+        jobsTab.setContent(createJobPostingsView());
+
+// Tab 3: Learning Path
         Tab learningPathTab = new Tab("📚 Learning Path");
         learningPathTab.setContent(createLearningPathView());
 
-        // Tab 3: Visualizations
+// Tab 4: Visualizations
         Tab chartsTab = new Tab("📈 Charts");
         chartsTab.setContent(createChartsView());
 
-        tabPane.getTabs().addAll(summaryTab, learningPathTab, chartsTab);
+        tabPane.getTabs().addAll(summaryTab, jobsTab, learningPathTab, chartsTab);
         root.setCenter(tabPane);
 
         // Bottom: Actions
@@ -465,7 +469,135 @@ public class Main extends Application {
         scrollPane.setStyle("-fx-background-color: transparent;");
         return scrollPane;
     }
+    /**
+     * Create job postings view - Shows analyzed jobs
+     */
+    private ScrollPane createJobPostingsView() {
+        VBox content = new VBox(15);
+        content.setPadding(new Insets(20));
 
+        Label headerLabel = new Label("💼 Analyzed Job Postings (" + currentResult.getTotalJobsAnalyzed() + " jobs)");
+        headerLabel.setFont(Font.font("System", FontWeight.BOLD, 20));
+        headerLabel.setStyle("-fx-text-fill: #2c3e50;");
+
+        Label infoLabel = new Label("These are the jobs we analyzed to determine your skill match:");
+        infoLabel.setFont(Font.font("System", 14));
+        infoLabel.setStyle("-fx-text-fill: #7f8c8d;");
+
+        content.getChildren().addAll(headerLabel, infoLabel);
+
+        // Show first 10 jobs with details
+        List<Job> jobs = currentResult.getAnalyzedJobs();
+        int displayCount = Math.min(10, jobs.size());
+
+        for (int i = 0; i < displayCount; i++) {
+            Job job = jobs.get(i);
+            VBox jobCard = createJobCard(job, i + 1);
+            content.getChildren().add(jobCard);
+        }
+
+        if (jobs.size() > 10) {
+            Label moreLabel = new Label("... and " + (jobs.size() - 10) + " more jobs");
+            moreLabel.setFont(Font.font("System", FontWeight.BOLD, 14));
+            moreLabel.setStyle("-fx-text-fill: #95a5a6; -fx-padding: 10px;");
+            content.getChildren().add(moreLabel);
+        }
+
+        ScrollPane scrollPane = new ScrollPane(content);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setStyle("-fx-background-color: transparent;");
+        return scrollPane;
+    }
+
+    /**
+     * Create a job card for display
+     */
+    private VBox createJobCard(Job job, int index) {
+        VBox card = new VBox(10);
+        card.setStyle("-fx-background-color: white; -fx-padding: 20px; " +
+                "-fx-background-radius: 8px; -fx-border-color: #e0e0e0; " +
+                "-fx-border-radius: 8px; -fx-border-width: 1px;");
+
+        // Job title
+        Label titleLabel = new Label(index + ". " + job.getTitle());
+        titleLabel.setFont(Font.font("System", FontWeight.BOLD, 16));
+        titleLabel.setStyle("-fx-text-fill: #2c3e50;");
+
+        // Company
+        Label companyLabel = new Label("🏢 " + job.getCompany());
+        companyLabel.setFont(Font.font("System", 14));
+        companyLabel.setStyle("-fx-text-fill: #3498db;");
+
+        // Location
+        Label locationLabel = new Label("📍 " + job.getLocation());
+        locationLabel.setFont(Font.font("System", 13));
+        locationLabel.setStyle("-fx-text-fill: #7f8c8d;");
+
+        // Required skills
+        Label skillsHeaderLabel = new Label("Required Skills:");
+        skillsHeaderLabel.setFont(Font.font("System", FontWeight.BOLD, 13));
+
+        FlowPane skillsFlow = new FlowPane(8, 8);
+        List<Skill> requiredSkills = job.getRequiredSkills();
+
+        for (int i = 0; i < Math.min(8, requiredSkills.size()); i++) {
+            Skill skill = requiredSkills.get(i);
+
+            // Check if user has this skill
+            boolean userHasSkill = currentResume.hasSkill(skill.getName());
+            String skillColor = userHasSkill ? "#27ae60" : "#e74c3c";
+            String skillIcon = userHasSkill ? "✓ " : "✗ ";
+
+            Label skillLabel = new Label(skillIcon + skill.getName());
+            skillLabel.setStyle("-fx-background-color: " + skillColor + "; -fx-text-fill: white; " +
+                    "-fx-padding: 5px 12px; -fx-background-radius: 12px; -fx-font-size: 12px;");
+            skillsFlow.getChildren().add(skillLabel);
+        }
+
+        if (requiredSkills.size() > 8) {
+            Label moreSkills = new Label("+" + (requiredSkills.size() - 8) + " more");
+            moreSkills.setStyle("-fx-text-fill: #95a5a6; -fx-font-size: 12px;");
+            skillsFlow.getChildren().add(moreSkills);
+        }
+
+        // Calculate match for this specific job
+        int matchCount = 0;
+        for (Skill skill : requiredSkills) {
+            if (currentResume.hasSkill(skill.getName())) {
+                matchCount++;
+            }
+        }
+        double jobMatchPercentage = requiredSkills.isEmpty() ? 0 :
+                (matchCount * 100.0 / requiredSkills.size());
+
+        Label matchLabel = new Label(String.format("Your Match: %.0f%%", jobMatchPercentage));
+        matchLabel.setFont(Font.font("System", FontWeight.BOLD, 14));
+        matchLabel.setStyle("-fx-text-fill: " + (jobMatchPercentage >= 70 ? "#27ae60" :
+                jobMatchPercentage >= 40 ? "#f39c12" : "#e74c3c") + ";");
+
+        // Apply button
+        Button applyButton = new Button("🔗 View Job");
+        applyButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; " +
+                "-fx-padding: 8px 16px; -fx-background-radius: 5px;");
+        applyButton.setOnAction(e -> {
+            if (job.getUrl() != null && !job.getUrl().isEmpty()) {
+                try {
+                    java.awt.Desktop.getDesktop().browse(new java.net.URI(job.getUrl()));
+                } catch (Exception ex) {
+                    System.err.println("Could not open URL: " + ex.getMessage());
+                }
+            }
+        });
+
+        HBox bottomBox = new HBox(15);
+        bottomBox.setAlignment(Pos.CENTER_LEFT);
+        bottomBox.getChildren().addAll(matchLabel, applyButton);
+
+        card.getChildren().addAll(titleLabel, companyLabel, locationLabel,
+                skillsHeaderLabel, skillsFlow, bottomBox);
+
+        return card;
+    }
     /**
      * Create skill section
      */
