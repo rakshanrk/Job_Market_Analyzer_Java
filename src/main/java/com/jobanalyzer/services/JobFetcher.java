@@ -33,7 +33,7 @@ public class JobFetcher {
 
     // API endpoints
     private static final String API_BASE_URL = "https://api.adzuna.com/v1/api/jobs";
-    private static final String COUNTRY_CODE = "us";  // United States
+    private static final String COUNTRY_CODE = "in";  // India
 
     // Skill extractor for analyzing job descriptions
     private SkillExtractor skillExtractor;
