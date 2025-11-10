@@ -240,54 +240,69 @@ public class JobFetcher {
      */
     private List<Job> createSampleJobs(String searchQuery) {
         List<Job> sampleJobs = new ArrayList<>();
-
-        // Determine job type and create relevant jobs
         String lowerQuery = searchQuery.toLowerCase();
 
-        if (lowerQuery.contains("data scient")) {
+        if (lowerQuery.contains("data scient") || lowerQuery.contains("ml engineer")) {
             return createDataScienceJobs();
-        } else if (lowerQuery.contains("web dev")) {
-            return createWebDeveloperJobs();
+        } else if (lowerQuery.contains("full stack")) {
+            return createFullStackWebDeveloperJobs();
+        } else if (lowerQuery.contains("frontend")) {
+            return createFrontendDeveloperJobs();
+        } else if (lowerQuery.contains("backend")) {
+            return createBackendDeveloperJobs();
         } else if (lowerQuery.contains("mobile")) {
             return createMobileDeveloperJobs();
-        } else if (lowerQuery.contains("devops")) {
+        } else if (lowerQuery.contains("devops") || lowerQuery.contains("sre")) {
             return createDevOpsJobs();
-        } else if (lowerQuery.contains("machine learning")) {
-            return createMLEngineerJobs();
+        } else if (lowerQuery.contains("cloud")) {
+            return createCloudEngineerJobs();
+        } else if (lowerQuery.contains("data engineer")) {
+            return createDataEngineerJobs();
+        } else if (lowerQuery.contains("ai") || lowerQuery.contains("deep learning")) {
+            return createAIEngineerJobs();
         } else {
-            // Default: Software Developer jobs
-            return createSoftwareDeveloperJobs();
+            return createSoftwareDeveloperJobs();  // Default
         }
     }
 
     private List<Job> createSoftwareDeveloperJobs() {
         List<Job> jobs = new ArrayList<>();
-
-        String[] companies = {"Google", "Microsoft", "Amazon", "Meta", "Apple", "Netflix", "Uber", "Airbnb", "Spotify", "Tesla"};
+        String[] companies = {"Google", "Microsoft", "Amazon", "Meta", "Apple", "Netflix", "Uber", "Spotify", "Adobe", "Oracle"};
         String[] cities = {"San Francisco, CA", "Seattle, WA", "New York, NY", "Austin, TX", "Boston, MA"};
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 35; i++) {
             Job job = new Job(
-                    "Software Engineer " + (i % 3 == 0 ? "II" : i % 3 == 1 ? "III" : ""),
+                    "Software Engineer " + ((i % 3 == 0) ? "II" : (i % 3 == 1) ? "III" : "Senior"),
                     companies[i % companies.length],
-                    "Looking for software engineer with strong programming skills. " +
-                            "Experience with Java, Python, algorithms, and system design required. " +
-                            "Knowledge of databases, REST APIs, and Agile methodologies preferred."
+                    "Seeking software engineer with strong programming fundamentals. " +
+                            "Experience in system design, algorithms, and clean code practices required."
             );
             job.setId("sw-" + i);
             job.setLocation(cities[i % cities.length]);
-            job.setSalary(100000 + (i * 2000));
+            job.setSalary(120000 + (i * 3000));
             job.setUrl("https://www.linkedin.com/jobs/");
 
-            // Add relevant skills
+            // Core skills (every job)
             job.addRequiredSkill(new Skill("Java"));
             job.addRequiredSkill(new Skill("Python"));
             job.addRequiredSkill(new Skill("SQL"));
             job.addRequiredSkill(new Skill("Git"));
             job.addRequiredSkill(new Skill("REST API"));
-            if (i % 2 == 0) job.addRequiredSkill(new Skill("Docker"));
-            if (i % 3 == 0) job.addRequiredSkill(new Skill("AWS"));
-            if (i % 4 == 0) job.addRequiredSkill(new Skill("Kubernetes"));
+            job.addRequiredSkill(new Skill("Agile"));
+
+            // Varying skills based on seniority
+            if (i % 3 == 0) { // Backend focus
+                job.addRequiredSkill(new Skill("Spring Boot"));
+                job.addRequiredSkill(new Skill("Microservices"));
+                job.addRequiredSkill(new Skill("Docker"));
+            } else if (i % 3 == 1) { // Cloud focus
+                job.addRequiredSkill(new Skill("AWS"));
+                job.addRequiredSkill(new Skill("Kubernetes"));
+                job.addRequiredSkill(new Skill("CI/CD"));
+            } else { // Data focus
+                job.addRequiredSkill(new Skill("MongoDB"));
+                job.addRequiredSkill(new Skill("Redis"));
+            }
 
             jobs.add(job);
         }
@@ -296,42 +311,186 @@ public class JobFetcher {
 
     private List<Job> createDataScienceJobs() {
         List<Job> jobs = new ArrayList<>();
+        String[] companies = {"Netflix", "Google AI", "Amazon ML", "Meta AI", "IBM", "Intel", "NVIDIA", "Tesla", "OpenAI", "Anthropic"};
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 35; i++) {
             Job job = new Job(
-                    "Data Scientist",
-                    "Company " + i,
-                    "Seeking data scientist with Python, machine learning, and statistics expertise. " +
-                            "Experience with TensorFlow, PyTorch, pandas, and data visualization required."
+                    (i % 2 == 0) ? "Data Scientist" : "ML Engineer",
+                    companies[i % companies.length],
+                    "Data scientist role focusing on ML, statistical analysis, and predictive modeling. " +
+                            "Strong Python, statistics, and ML framework experience required."
             );
-            job.setLocation("Remote");
+            job.setLocation("Remote / " + ((i % 2 == 0) ? "San Francisco" : "New York"));
+            job.setSalary(140000 + (i * 2500));
+
+            // Core DS/ML skills
             job.addRequiredSkill(new Skill("Python"));
             job.addRequiredSkill(new Skill("Machine Learning"));
             job.addRequiredSkill(new Skill("Statistics"));
             job.addRequiredSkill(new Skill("Pandas"));
             job.addRequiredSkill(new Skill("NumPy"));
-            job.addRequiredSkill(new Skill("TensorFlow"));
             job.addRequiredSkill(new Skill("SQL"));
+            job.addRequiredSkill(new Skill("Data Visualization"));
+
+            // Deep learning skills (70% of jobs)
+            if (i % 10 < 7) {
+                job.addRequiredSkill(new Skill("TensorFlow"));
+                job.addRequiredSkill(new Skill("PyTorch"));
+                job.addRequiredSkill(new Skill("Deep Learning"));
+            }
+
+            // Big data skills (50% of jobs)
+            if (i % 2 == 0) {
+                job.addRequiredSkill(new Skill("Spark"));
+                job.addRequiredSkill(new Skill("Hadoop"));
+            }
+
+            // NLP/CV specialization
+            if (i % 3 == 0) {
+                job.addRequiredSkill(new Skill("NLP"));
+            } else if (i % 3 == 1) {
+                job.addRequiredSkill(new Skill("Computer Vision"));
+            }
+
             jobs.add(job);
         }
         return jobs;
     }
 
-    private List<Job> createWebDeveloperJobs() {
+    private List<Job> createFullStackWebDeveloperJobs() {
         List<Job> jobs = new ArrayList<>();
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 35; i++) {
             Job job = new Job(
-                    "Web Developer",
-                    "WebCo " + i,
-                    "Web developer needed. HTML, CSS, JavaScript, React, Node.js experience required."
+                    "Full Stack Developer",
+                    "Tech Company " + i,
+                    "Full stack developer for modern web applications. Both frontend and backend experience required."
             );
+            job.setLocation("Remote");
+            job.setSalary(110000 + (i * 2000));
+
+            // Frontend (always required)
             job.addRequiredSkill(new Skill("HTML"));
             job.addRequiredSkill(new Skill("CSS"));
             job.addRequiredSkill(new Skill("JavaScript"));
             job.addRequiredSkill(new Skill("React"));
+
+            // Backend (always required)
             job.addRequiredSkill(new Skill("Node.js"));
+            job.addRequiredSkill(new Skill("Express"));
+            job.addRequiredSkill(new Skill("REST API"));
+
+            // Database
+            if (i % 2 == 0) {
+                job.addRequiredSkill(new Skill("MongoDB"));
+            } else {
+                job.addRequiredSkill(new Skill("PostgreSQL"));
+            }
+
+            // Additional frontend frameworks
+            if (i % 3 == 0) {
+                job.addRequiredSkill(new Skill("TypeScript"));
+                job.addRequiredSkill(new Skill("Redux"));
+            }
+
+            // DevOps basics
             job.addRequiredSkill(new Skill("Git"));
+            job.addRequiredSkill(new Skill("Docker"));
+
+            jobs.add(job);
+        }
+        return jobs;
+    }
+
+    private List<Job> createFrontendDeveloperJobs() {
+        List<Job> jobs = new ArrayList<>();
+
+        for (int i = 0; i < 35; i++) {
+            Job job = new Job(
+                    "Frontend Developer",
+                    "WebCo " + i,
+                    "Frontend developer for responsive, modern web applications."
+            );
+            job.setLocation("Remote / Hybrid");
+
+            // Core frontend stack
+            job.addRequiredSkill(new Skill("HTML"));
+            job.addRequiredSkill(new Skill("CSS"));
+            job.addRequiredSkill(new Skill("JavaScript"));
+            job.addRequiredSkill(new Skill("React"));
+            job.addRequiredSkill(new Skill("Git"));
+
+            // Modern tools
+            if (i % 2 == 0) {
+                job.addRequiredSkill(new Skill("TypeScript"));
+            }
+            if (i % 3 == 0) {
+                job.addRequiredSkill(new Skill("Next.js"));
+            }
+
+            // State management
+            job.addRequiredSkill(new Skill("Redux"));
+
+            // Styling
+            if (i % 2 == 0) {
+                job.addRequiredSkill(new Skill("Tailwind CSS"));
+            } else {
+                job.addRequiredSkill(new Skill("Sass"));
+            }
+
+            // Testing
+            if (i % 3 == 0) {
+                job.addRequiredSkill(new Skill("Jest"));
+            }
+
+            jobs.add(job);
+        }
+        return jobs;
+    }
+
+    private List<Job> createBackendDeveloperJobs() {
+        List<Job> jobs = new ArrayList<>();
+
+        for (int i = 0; i < 35; i++) {
+            Job job = new Job(
+                    "Backend Developer",
+                    "Company " + i,
+                    "Backend engineer for scalable server-side applications and APIs."
+            );
+
+            // Language variety
+            if (i % 3 == 0) {
+                job.addRequiredSkill(new Skill("Java"));
+                job.addRequiredSkill(new Skill("Spring Boot"));
+            } else if (i % 3 == 1) {
+                job.addRequiredSkill(new Skill("Python"));
+                job.addRequiredSkill(new Skill("Django"));
+            } else {
+                job.addRequiredSkill(new Skill("Node.js"));
+                job.addRequiredSkill(new Skill("Express"));
+            }
+
+            // Common backend skills
+            job.addRequiredSkill(new Skill("REST API"));
+            job.addRequiredSkill(new Skill("SQL"));
+            job.addRequiredSkill(new Skill("Git"));
+            job.addRequiredSkill(new Skill("Microservices"));
+
+            // Database
+            if (i % 2 == 0) {
+                job.addRequiredSkill(new Skill("PostgreSQL"));
+            } else {
+                job.addRequiredSkill(new Skill("MongoDB"));
+            }
+
+            // Caching/Message queues
+            if (i % 3 == 0) {
+                job.addRequiredSkill(new Skill("Redis"));
+            }
+            if (i % 4 == 0) {
+                job.addRequiredSkill(new Skill("Kafka"));
+            }
+
             jobs.add(job);
         }
         return jobs;
@@ -340,21 +499,34 @@ public class JobFetcher {
     private List<Job> createMobileDeveloperJobs() {
         List<Job> jobs = new ArrayList<>();
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 35; i++) {
             Job job = new Job(
-                    "Mobile Developer",
+                    (i % 2 == 0) ? "iOS Developer" : "Android Developer",
                     "MobileApp " + i,
-                    "Mobile developer for iOS and Android. Swift, Kotlin, React Native experience."
+                    "Mobile developer for native applications."
             );
-            if (i % 2 == 0) {
+
+            if (i % 3 == 0) {  // Cross-platform
+                job.addRequiredSkill(new Skill("React Native"));
+                job.addRequiredSkill(new Skill("JavaScript"));
+            } else if (i % 3 == 1) {  // Flutter
+                job.addRequiredSkill(new Skill("Flutter"));
+                job.addRequiredSkill(new Skill("Dart"));
+            } else if (i % 2 == 0) {  // iOS native
                 job.addRequiredSkill(new Skill("iOS"));
                 job.addRequiredSkill(new Skill("Swift"));
-            } else {
+                job.addRequiredSkill(new Skill("SwiftUI"));
+            } else {  // Android native
                 job.addRequiredSkill(new Skill("Android"));
                 job.addRequiredSkill(new Skill("Kotlin"));
+                job.addRequiredSkill(new Skill("Jetpack Compose"));
             }
-            job.addRequiredSkill(new Skill("React Native"));
+
+            // Common mobile skills
+            job.addRequiredSkill(new Skill("REST API"));
             job.addRequiredSkill(new Skill("Git"));
+            job.addRequiredSkill(new Skill("Firebase"));
+
             jobs.add(job);
         }
         return jobs;
@@ -363,38 +535,173 @@ public class JobFetcher {
     private List<Job> createDevOpsJobs() {
         List<Job> jobs = new ArrayList<>();
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 35; i++) {
             Job job = new Job(
-                    "DevOps Engineer",
+                    (i % 2 == 0) ? "DevOps Engineer" : "SRE (Site Reliability Engineer)",
                     "CloudOps " + i,
-                    "DevOps engineer needed. Docker, Kubernetes, AWS, CI/CD, Linux required."
+                    "DevOps engineer for CI/CD, infrastructure automation, and cloud operations."
             );
+
+            // Core DevOps tools
             job.addRequiredSkill(new Skill("Docker"));
             job.addRequiredSkill(new Skill("Kubernetes"));
-            job.addRequiredSkill(new Skill("AWS"));
             job.addRequiredSkill(new Skill("Linux"));
             job.addRequiredSkill(new Skill("Git"));
+            job.addRequiredSkill(new Skill("CI/CD"));
+
+            // Cloud (varies)
+            if (i % 3 == 0) {
+                job.addRequiredSkill(new Skill("AWS"));
+            } else if (i % 3 == 1) {
+                job.addRequiredSkill(new Skill("Azure"));
+            } else {
+                job.addRequiredSkill(new Skill("GCP"));
+            }
+
+            // IaC tools
+            if (i % 2 == 0) {
+                job.addRequiredSkill(new Skill("Terraform"));
+            } else {
+                job.addRequiredSkill(new Skill("Ansible"));
+            }
+
+            // CI/CD tools
             job.addRequiredSkill(new Skill("Jenkins"));
+
+            // Monitoring
+            if (i % 3 == 0) {
+                job.addRequiredSkill(new Skill("Prometheus"));
+                job.addRequiredSkill(new Skill("Grafana"));
+            }
+
+            // Scripting
+            job.addRequiredSkill(new Skill("Python"));
+            job.addRequiredSkill(new Skill("Bash"));
+
             jobs.add(job);
         }
         return jobs;
     }
 
-    private List<Job> createMLEngineerJobs() {
+    private List<Job> createCloudEngineerJobs() {
         List<Job> jobs = new ArrayList<>();
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 35; i++) {
             Job job = new Job(
-                    "Machine Learning Engineer",
-                    "AI Corp " + i,
-                    "ML engineer for deep learning projects. Python, TensorFlow, PyTorch required."
+                    "Cloud Engineer",
+                    "Cloud Corp " + i,
+                    "Cloud architect for designing and deploying cloud-native solutions."
             );
+
+            // Primary cloud (distributed across jobs)
+            if (i % 3 == 0) {
+                job.addRequiredSkill(new Skill("AWS"));
+                job.addRequiredSkill(new Skill("EC2"));
+                job.addRequiredSkill(new Skill("S3"));
+                job.addRequiredSkill(new Skill("Lambda"));
+            } else if (i % 3 == 1) {
+                job.addRequiredSkill(new Skill("Azure"));
+                job.addRequiredSkill(new Skill("Azure Functions"));
+            } else {
+                job.addRequiredSkill(new Skill("GCP"));
+                job.addRequiredSkill(new Skill("Google Cloud Functions"));
+            }
+
+            // Common cloud skills
+            job.addRequiredSkill(new Skill("Docker"));
+            job.addRequiredSkill(new Skill("Kubernetes"));
+            job.addRequiredSkill(new Skill("Terraform"));
+            job.addRequiredSkill(new Skill("CI/CD"));
+            job.addRequiredSkill(new Skill("Linux"));
+
+            jobs.add(job);
+        }
+        return jobs;
+    }
+
+    private List<Job> createDataEngineerJobs() {
+        List<Job> jobs = new ArrayList<>();
+
+        for (int i = 0; i < 35; i++) {
+            Job job = new Job(
+                    "Data Engineer",
+                    "Data Co " + i,
+                    "Data engineer for building ETL pipelines and data infrastructure."
+            );
+
+            // Core data engineering
             job.addRequiredSkill(new Skill("Python"));
-            job.addRequiredSkill(new Skill("Machine Learning"));
+            job.addRequiredSkill(new Skill("SQL"));
+            job.addRequiredSkill(new Skill("Spark"));
+            job.addRequiredSkill(new Skill("Airflow"));
+
+            // Big data tools
+            if (i % 2 == 0) {
+                job.addRequiredSkill(new Skill("Hadoop"));
+            }
+            job.addRequiredSkill(new Skill("Kafka"));
+
+            // Cloud data services
+            if (i % 3 == 0) {
+                job.addRequiredSkill(new Skill("AWS"));
+                job.addRequiredSkill(new Skill("Redshift"));
+            } else if (i % 3 == 1) {
+                job.addRequiredSkill(new Skill("Azure"));
+                job.addRequiredSkill(new Skill("Azure Synapse"));
+            } else {
+                job.addRequiredSkill(new Skill("GCP"));
+                job.addRequiredSkill(new Skill("BigQuery"));
+            }
+
+            // Databases
+            job.addRequiredSkill(new Skill("PostgreSQL"));
+            if (i % 2 == 0) {
+                job.addRequiredSkill(new Skill("MongoDB"));
+            }
+
+            jobs.add(job);
+        }
+        return jobs;
+    }
+
+    private List<Job> createAIEngineerJobs() {
+        List<Job> jobs = new ArrayList<>();
+
+        for (int i = 0; i < 35; i++) {
+            Job job = new Job(
+                    "AI / Deep Learning Engineer",
+                    "AI Lab " + i,
+                    "AI engineer for developing and deploying deep learning models."
+            );
+
+            // Core AI/DL stack
+            job.addRequiredSkill(new Skill("Python"));
             job.addRequiredSkill(new Skill("Deep Learning"));
             job.addRequiredSkill(new Skill("TensorFlow"));
             job.addRequiredSkill(new Skill("PyTorch"));
-            job.addRequiredSkill(new Skill("Docker"));
+            job.addRequiredSkill(new Skill("Machine Learning"));
+
+            // Math foundations
+            job.addRequiredSkill(new Skill("Statistics"));
+            job.addRequiredSkill(new Skill("Linear Algebra"));
+
+            // Specializations
+            if (i % 3 == 0) {
+                job.addRequiredSkill(new Skill("NLP"));
+                job.addRequiredSkill(new Skill("Transformers"));
+            } else if (i % 3 == 1) {
+                job.addRequiredSkill(new Skill("Computer Vision"));
+                job.addRequiredSkill(new Skill("CNNs"));
+            } else {
+                job.addRequiredSkill(new Skill("Reinforcement Learning"));
+            }
+
+            // MLOps
+            if (i % 2 == 0) {
+                job.addRequiredSkill(new Skill("MLOps"));
+                job.addRequiredSkill(new Skill("Docker"));
+            }
+
             jobs.add(job);
         }
         return jobs;

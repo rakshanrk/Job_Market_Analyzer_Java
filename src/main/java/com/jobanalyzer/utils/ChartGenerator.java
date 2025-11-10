@@ -98,36 +98,45 @@ public class ChartGenerator {
         List<Skill> matchingSkills = result.getMatchingSkills();
         List<Skill> missingSkills = result.getMissingSkills();
 
-        // If we have skills, add top 8 for visualization
-        int maxSkills = 8;
-
-        // Add matching skills (up to maxSkills/2)
+        // Add matching skills (up to 6)
         int count = 0;
         for (Skill skill : matchingSkills) {
-            if (count >= maxSkills / 2) break;
-            dataset.addValue(5.0, "Your Skills", skill.getName());
+            if (count >= 6) break;
+            dataset.addValue(10.0, "Your Skills", skill.getName());
             count++;
         }
 
-        // Add missing skills (up to maxSkills/2)
+        // Add missing skills (up to 6)
         count = 0;
         for (Skill skill : missingSkills) {
-            if (count >= maxSkills / 2) break;
-            dataset.addValue(2.0, "Skills to Learn", skill.getName());
+            if (count >= 6) break;
+            dataset.addValue(5.0, "Skills to Learn", skill.getName());
             count++;
         }
 
-        // If no data, add placeholder
-        if (dataset.getRowCount() == 0) {
-            dataset.addValue(0, "No Data", "Skill 1");
-            dataset.addValue(0, "No Data", "Skill 2");
+        // If no data, add placeholders
+        if (dataset.getColumnCount() == 0) {
+            dataset.addValue(5, "Sample", "Skill A");
+            dataset.addValue(5, "Sample", "Skill B");
+            dataset.addValue(5, "Sample", "Skill C");
+            dataset.addValue(5, "Sample", "Skill D");
         }
 
         // Create spider plot
         SpiderWebPlot plot = new SpiderWebPlot(dataset);
         plot.setBackgroundPaint(Color.WHITE);
-        plot.setSeriesPaint(0, new Color(46, 204, 113));   // Green for your skills
-        plot.setSeriesPaint(1, new Color(231, 76, 60));    // Red for skills to learn
+        plot.setOutlinePaint(Color.GRAY);
+        plot.setWebFilled(true);
+
+        // Set colors with transparency
+        plot.setSeriesPaint(0, new Color(46, 204, 113, 180));   // Green for your skills
+        plot.setSeriesPaint(1, new Color(231, 76, 60, 180));    // Red for skills to learn
+        plot.setSeriesOutlinePaint(0, new Color(46, 204, 113));
+        plot.setSeriesOutlinePaint(1, new Color(231, 76, 60));
+
+        // Customize appearance
+        plot.setLabelFont(new Font("SansSerif", Font.PLAIN, 12));
+        plot.setLabelPaint(Color.BLACK);
 
         // Create chart
         JFreeChart chart = new JFreeChart(
@@ -138,6 +147,7 @@ public class ChartGenerator {
         );
 
         chart.setBackgroundPaint(Color.WHITE);
+        chart.getLegend().setItemFont(new Font("SansSerif", Font.PLAIN, 12));
 
         System.out.println("✅ Spider chart created");
         return chart;
