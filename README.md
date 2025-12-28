@@ -1,8 +1,3 @@
-![GitHub release](https://img.shields.io/github/v/release/rakshanrk/Job_Market_Analyzer_Java?style=for-the-badge)
-![GitHub stars](https://img.shields.io/github/stars/rakshanrk/Job_Market_Analyzer_Java?style=for-the-badge)
-![GitHub forks](https://img.shields.io/github/forks/rakshanrk/Job_Market_Analyzer_Java?style=for-the-badge)
-![GitHub issues](https://img.shields.io/github/issues/rakshanrk/Job_Market_Analyzer_Java?style=for-the-badge)
-
 # 📊 Job Market Analyzer
 
 <div align="center">
@@ -384,19 +379,12 @@ Contributions are welcome! Here's how you can help:
 
 ---
 
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
 ## 👨‍💻 Author
 
 **Rakshan RK**
 
 - GitHub: [@rakshanrk](https://github.com/rakshanrk)
-- LinkedIn: [Your LinkedIn Profile]
-- Email: [Your Email]
+- LinkedIn: [https://www.linkedin.com/in/rakshanrk/]
 
 ---
 
@@ -421,15 +409,7 @@ If you encounter any issues or have questions:
 
 ---
 
-## ⭐ Show Your Support
-
-If this project helped you, please give it a ⭐ on GitHub!
-
----
-
 <div align="center">
-
-**Built with ❤️ using Java and AI**
 
 [Back to Top](#-job-market-analyzer)
 
