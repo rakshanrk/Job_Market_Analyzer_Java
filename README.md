@@ -5,7 +5,6 @@
 ![Java](https://img.shields.io/badge/Java-21%2B-007396?style=for-the-badge&logo=java&logoColor=white)
 ![JavaFX](https://img.shields.io/badge/JavaFX-23-FF6C37?style=for-the-badge&logo=java&logoColor=white)
 ![Maven](https://img.shields.io/badge/Maven-3.x-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
 **AI-Powered Career Analysis Tool with Personalized Learning Paths**
 
